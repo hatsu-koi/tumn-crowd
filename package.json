@@ -1,0 +1,28 @@
+{
+  "name": "tumn-crowd",
+  "version": "1.0.0",
+  "description": "A simple application to make dataset",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hatsu-koi/tumn-crowd.git"
+  },
+  "keywords": [
+    "tumn"
+  ],
+  "author": "Tumn Developers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hatsu-koi/tumn-crowd/issues"
+  },
+  "homepage": "https://github.com/hatsu-koi/tumn-crowd#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongodb": "^3.1.0",
+    "morgan": "^1.9.0"
+  }
+}
