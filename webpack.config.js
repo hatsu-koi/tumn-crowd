@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const WebpackBar = require('webpackbar');
 
 module.exports = {
@@ -77,6 +78,7 @@ module.exports = {
 			NODE_ENV: 'development'
 		}),
 		new ExtractTextPlugin('[name].bundle.css'),
+		new VueLoaderPlugin(),
 		new WebpackBar({
 			profile: true
 		})
