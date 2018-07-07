@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --experimental-modules index.mjs",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "export": "node --experimental-modules export.mjs"
   },
   "repository": {
     "type": "git",

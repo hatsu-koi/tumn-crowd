@@ -27,6 +27,9 @@ const port = ((val) => {
 
 	app.use(logger('dev'));
 	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({
+		extended: false
+	}));
 	app.use('/dist', express.static('./dist/'));
 
 	app.get('/', (req, res) => {
@@ -60,7 +63,7 @@ const port = ((val) => {
 	});
 
 	app.post('/sentence', async (req, res) => {
-		if(!req.query.token || !tokens.includes(req.query.token)) {
+		if(!req.body.token || !tokens.includes(req.body.token)) {
 			res.status(403).end();
 			return;
 		}

@@ -62,10 +62,14 @@
 
 		methods: {
 			async submit() {
-				await fetch(`./sentence/?token=${this.token}`, {
+				await fetch(`./sentence`, {
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
 					body: JSON.stringify({
 						id: this.id,
+						token: this.token,
 						filter: JSON.stringify(this.marks)
 					})
 				});

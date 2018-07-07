@@ -42,8 +42,8 @@
 				this.token = prompt("Please enter your token");
 			},
 
-			async addData(n) {
-				const res = await fetch(`./sentence/?token=${this.token}&count=${n}`);
+			async addData(n, from=0) {
+				const res = await fetch(`./sentence/?token=${this.token}&count=${n}&from=${from}`);
 				const json = await res.json();
 
 				this.sentences.push(...json);
@@ -51,7 +51,7 @@
 
 			async removeAndAdd(id) {
 				this.sentences = this.sentences.filter(v => v.id !== id);
-				await this.addData(1);
+				await this.addData(1, 4);
 			}
 		},
 
