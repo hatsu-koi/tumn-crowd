@@ -27,6 +27,10 @@
 </template>
 
 <style scoped>
+	.Word {
+		margin: 4px 0;
+	}
+	
 	.Word__content {
 		background: rgba(0, 0, 0, .5);
 		color: #f1f2f3;

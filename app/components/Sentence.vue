@@ -23,6 +23,7 @@
 
 	.Words {
 		display: flex;
+		flex-wrap: wrap;
 		margin: 10px 0;
 	}
 </style>
