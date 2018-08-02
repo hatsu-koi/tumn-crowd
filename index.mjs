@@ -43,7 +43,7 @@ const port = ((val) => {
 	});
 
 	app.get('/sentence', async (req, res) => {
-		if(!req.query.token || !tokens.includes(req.query.token)) {
+		if(!req.query.token || !Object.keys(tokens).includes(req.query.token)) {
 			res.status(403).end();
 			return;
 		}
@@ -54,9 +54,14 @@ const port = ((val) => {
 		if(!isFinite(from)) from = 0;
 		if(!isFinite(count)) count = 5;
 
+		from = from;
+
 		const sentences = await collection.find({
 			filter: {
 				$exists: false
+			},
+			index: {
+				$gt: tokens[req.query.token]
 			}
 		}, {skip: from, limit: count}).toArray();
 
@@ -78,6 +83,7 @@ const port = ((val) => {
 			sentenceArray.push({
 				id: sentence._id.toHexString(),
 				content: {
+					index: sentence.index,
 					words
 				}
 			});
@@ -87,7 +93,7 @@ const port = ((val) => {
 	});
 
 	app.post('/sentence', async (req, res) => {
-		if(!req.body.token || !tokens.includes(req.body.token)) {
+		if(!req.body.token || !Object.keys(tokens).includes(req.body.token)) {
 			res.status(403).end();
 			return;
 		}

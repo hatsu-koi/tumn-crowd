@@ -15,7 +15,7 @@
 
 			<label>
 				<input type="checkbox" v-model="isSwearwords">
-				욕설
+				비속어
 			</label>
 
 			<label>

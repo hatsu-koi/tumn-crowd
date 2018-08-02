@@ -1,5 +1,6 @@
 <template>
 	<div class="Sentence">
+		<i>#{{sentence.index}}</i>
 		<div class="Words">
 			<word v-for="(word, index) in words"
 				:key="index"
