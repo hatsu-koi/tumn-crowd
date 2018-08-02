@@ -56,8 +56,7 @@
 		},
 
 		mounted() {
-			//this.askToken();
-			this.token = 'nenchan';
+			this.askToken();
 			this.addData(5);
 		},
 

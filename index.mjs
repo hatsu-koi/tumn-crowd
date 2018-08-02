@@ -6,6 +6,9 @@ import mongodb from "mongodb";
 import path from "path";
 import tokens from "./tokens.json";
 
+import OpenKoreanText from 'open-korean-text-node';
+
+
 const port = ((val) => {
 	let port = parseInt(val, 10);
 
@@ -16,10 +19,13 @@ const port = ((val) => {
 
 (async () => {
 	const {MongoClient, ObjectID} = mongodb;
+	const OpenKoreanTextProcessor = OpenKoreanText.default;
 
 	const client = await MongoClient.connect('mongodb://localhost:27017', {useNewUrlParser: true})
 	const db = client.db('tumn-cat');
 	const collection = db.collection('contents');
+
+	await OpenKoreanTextProcessor.ensureJvm();
 
 	const app = express();
 
@@ -54,12 +60,30 @@ const port = ((val) => {
 			}
 		}, {skip: from, limit: count}).toArray();
 
-		res.json(
-			sentences.map(sentence => ({
+		const sentenceArray = [];
+		for(let sentence of sentences) {
+			const tokens = await OpenKoreanTextProcessor.tokenize(
+				await OpenKoreanTextProcessor.normalize(sentence.content)
+			);
+
+			const words = tokens.toJSON().map(({text, pos, stem}) => {
+				if(pos === 'Space') return null;
+
+				return {
+					text,
+					value: `${stem || text}/${pos}`
+				};
+			}).filter(v => v !== null);
+
+			sentenceArray.push({
 				id: sentence._id.toHexString(),
-				content: sentence.content
-			}))
-		);
+				content: {
+					words
+				}
+			});
+		}
+
+		res.json(sentenceArray);
 	});
 
 	app.post('/sentence', async (req, res) => {
@@ -72,7 +96,8 @@ const port = ((val) => {
 			_id: new ObjectID(req.body.id)
 		}, {
 			$set: {
-				filter: JSON.parse(req.body.filter)
+				filter: JSON.parse(req.body.filter),
+				content: JSON.parse(req.body.content)
 			}
 		});
 

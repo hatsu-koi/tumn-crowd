@@ -40,7 +40,7 @@
 
 		props: {
 			sentence: {
-				type: String,
+				type: Object,
 				required: true
 			},
 
@@ -57,7 +57,7 @@
 
 		computed: {
 			words() {
-				return this.sentence.split(/[^ㄱ-ㅎㅏ-ㅣ가-힣A-Za-z0-9-_]+/);
+				return this.sentence.words;
 			}
 		},
 
@@ -71,6 +71,7 @@
 					body: JSON.stringify({
 						id: this.id,
 						token: this.token,
+						content: JSON.stringify(this.sentence.words.map(v => v.value)),
 						filter: JSON.stringify(this.marks)
 					})
 				});

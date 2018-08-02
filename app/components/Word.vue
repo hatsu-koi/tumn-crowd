@@ -1,11 +1,11 @@
 <template>
-	<div class="Word">
+	<div class="Word" @keydown="handleKey">
 		<button class="Word__content" @click="toggleOverlay" :class="{
 			'Word__content--mature': isMature,
 			'Word__content--swearwords': isSwearwords,
 			'Word__content--hatespeech': isHatespeech
 		}">
-			{{word}}
+			{{word.text}}
 		</button>
 		<div class="Word__overlay" v-if="overlay">
 			<label>
@@ -30,7 +30,7 @@
 	.Word {
 		margin: 4px 0;
 	}
-	
+
 	.Word__content {
 		background: rgba(0, 0, 0, .5);
 		color: #f1f2f3;
@@ -43,6 +43,8 @@
 
 	.Word__overlay {
 		position: absolute;
+		background: #fff;
+		padding: 10px;
 	}
 
 	.Word__content--mature {
@@ -92,7 +94,7 @@
 			},
 
 			word: {
-				type: String,
+				type: Object,
 				required: true
 			}
 		},
@@ -116,42 +118,42 @@
 
 			isMature: {
 				get() {
-					return (this.value % FILTER_HATESPEECH) % FILTER_SWEARWORDS >= FILTER_MATURE;
+					return this.value & FILTER_MATURE;
 				},
 
 				set(v) {
-					if(!v && this.isMature) {
-						this.value -= FILTER_MATURE;
-					} else if (v && !this.isMature) {
-						this.value += FILTER_MATURE;
+					if(v) {
+						this.value |= FILTER_MATURE;
+					} else {
+						this.value &= ~FILTER_MATURE;
 					}
 				}
 			},
 
 			isSwearwords: {
 				get() {
-					return this.value % FILTER_HATESPEECH >= FILTER_SWEARWORDS;
+					return this.value & FILTER_SWEARWORDS;
 				},
 
 				set(v) {
-					if(!v && this.isSwearwords) {
-						this.value -= FILTER_SWEARWORDS;
-					} else if (v && !this.isSwearwords) {
-						this.value += FILTER_SWEARWORDS;
+					if(v) {
+						this.value |= FILTER_SWEARWORDS;
+					} else {
+						this.value &= ~FILTER_SWEARWORDS;
 					}
 				}
 			},
 
 			isHatespeech: {
 				get() {
-					return this.value >= FILTER_HATESPEECH;
+					return this.value & FILTER_HATESPEECH;
 				},
 
 				set(v) {
-					if(!v && this.isHatespeech) {
-						this.value -= FILTER_HATESPEECH;
-					} else if (v && !this.isHatespeech) {
-						this.value += FILTER_HATESPEECH;
+					if(v) {
+						this.value |= FILTER_HATESPEECH;
+					} else {
+						this.value &= ~FILTER_HATESPEECH;
 					}
 				}
 			}
@@ -166,6 +168,26 @@
 				}
 
 				this.$emit('close');
+			},
+
+			handleKey(ev) {
+				switch(ev.key) {
+					case 'a':
+						this.isMature = !this.isMature;
+						break;
+
+					case 's':
+						this.isSwearwords = !this.isSwearwords;
+						break;
+
+					case 'd':
+						this.isHatespeech = !this.isHatespeech;
+						break;
+
+					case 'Escape':
+						this.$emit('close');
+						break;
+				}
 			}
 		}
 	};
