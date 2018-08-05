@@ -1,6 +1,11 @@
 <template>
 	<div class="Sentence">
 		<i>#{{sentence.index}}</i>
+		<div v-if="sentence.reserved">
+			<h3>보류 이유</h3>
+			<pre v-html="sentence.reserved"></pre>
+		</div>
+
 		<div class="Words">
 			<word v-for="(word, index) in words"
 				:key="index"
@@ -11,6 +16,7 @@
 			</word>
 		</div>
 		<button class="Button" @click="submit">제출</button>
+		<button class="Button" v-if="!sentence.reserved" @click="reserve">보류</button>
 	</div>
 </template>
 
@@ -74,6 +80,24 @@
 						token: this.token,
 						content: JSON.stringify(this.sentence.words.map(v => v.value)),
 						filter: JSON.stringify(this.marks)
+					})
+				});
+
+				this.$emit('remove');
+			},
+
+			async reserve() {
+				const reason = prompt('보류하는 이유를 입력하여 주세요.');
+
+				await fetch('./sentence/reserve', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						id: this.id,
+						token: this.token,
+						reason
 					})
 				});
 

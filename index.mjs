@@ -56,14 +56,28 @@ const port = ((val) => {
 
 		from = from;
 
-		const sentences = await collection.find({
+		const filter = {
 			filter: {
 				$exists: false
-			},
-			index: {
-				$gt: tokens[req.query.token]
 			}
-		}, {skip: from, limit: count}).toArray();
+		};
+
+		if(typeof tokens[req.query.token] === 'number') {
+			filter.index = {
+				$gt: tokens[req.query.token]
+			};
+
+			filter.reserved = {
+				$exists: false
+			};
+
+		} else if(tokens[req.query.token] === 'reserved'){
+			filter.reserved = {
+				$exists: true
+			};
+		}
+
+		const sentences = await collection.find(filter, {skip: from, limit: count}).toArray();
 
 		const sentenceArray = [];
 		for(let sentence of sentences) {
@@ -84,7 +98,8 @@ const port = ((val) => {
 				id: sentence._id.toHexString(),
 				content: {
 					index: sentence.index,
-					words
+					words,
+					reserved: sentence.reserved
 				}
 			});
 		}
@@ -104,6 +119,23 @@ const port = ((val) => {
 			$set: {
 				filter: JSON.parse(req.body.filter),
 				content: JSON.parse(req.body.content)
+			}
+		});
+
+		res.status(200).json({ok: true});
+	});
+
+	app.post('/sentence/reserve', async (req, res) => {
+		if(!req.body.token || !Object.keys(tokens).includes(req.body.token)) {
+			res.status(403).end();
+			return;
+		}
+
+		await collection.findOneAndUpdate({
+			_id: new ObjectID(req.body.id)
+		}, {
+			$set: {
+				reserved: req.body.reason
 			}
 		});
 
