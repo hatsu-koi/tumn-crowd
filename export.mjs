@@ -14,11 +14,6 @@ import mongodb from "mongodb";
 		}
 	}).toArray();
 
-	sentences = sentences.map(v => {
-		v.content = v.content.split(/[^ㄱ-ㅎㅏ-ㅣ가-힣A-Za-z0-9-_]+/);
-		return v;
-	});
-
 	fs.writeFileSync('./result/mature.json', JSON.stringify(sentences.map(({content, filter}) => {
 		return {
 			content,
